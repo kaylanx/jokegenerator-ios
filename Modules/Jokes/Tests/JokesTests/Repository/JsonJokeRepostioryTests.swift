@@ -1,83 +1,24 @@
 //
-//  NetworkJokeRepository.swift
-//  SwiftUIAndTDDExampleTests
+//  JsonJokeRepositoryTests.swift
 //
 //  Created by Andy Kayley on 17/05/2023.
 //
 
 import XCTest
 
-enum NetworkJokeCategory: String {
-    case any
-}
+import RequestMaker
 
-struct NetworkJoke: Decodable {
-    let id: Int?
-    let error: Bool?
-    let category: String?
-    let type: String?
-    let joke: String?
-    let setup: String?
-    let delivery: String?
-    let flags: Flags?
-    let safe: Bool?
-    let lang: String?
+@testable import RequestMakerTestHelper
+@testable import Jokes
 
-    struct Flags: Decodable {
-        let nsfw: Bool?
-        let religious: Bool?
-        let political: Bool?
-        let racist: Bool?
-        let sexist: Bool?
-        let explicit: Bool?
-    }
-}
-
-protocol JokeRepository {
-    func joke(for category: NetworkJokeCategory) async throws -> NetworkJoke
-}
-
-protocol RequestMaker {
-    func makeRequest(for url: String) async throws -> Data
-}
-
-final class StubRequestMaker: RequestMaker {
-    var jsonJokeToReturn: String = "{ }"
-    var errorToThrow: Error?
-
-    var makeRequestCalled: Bool = false
-    func makeRequest(for url: String) async throws -> Data {
-        makeRequestCalled = true
-
-        if let errorToThrow {
-            throw errorToThrow
-        }
-        return jsonJokeToReturn.data(using: .utf8)!
-    }
-}
-
-final class NetworkJokeRepository: JokeRepository {
-
-    let requestMaker: RequestMaker
-
-    init(requestMaker: RequestMaker) {
-        self.requestMaker = requestMaker
-    }
-
-    func joke(for category: NetworkJokeCategory) async throws -> NetworkJoke {
-        let jsonData = try await requestMaker.makeRequest(for: "https://v2.jokeapi.dev/joke/\(category)")
-        return try JSONDecoder().decode(NetworkJoke.self, from: jsonData)
-    }
-}
-
-final class NetworkJokeRepositoryTest: XCTestCase {
+final class JsonJokeRepositoryTests: XCTestCase {
 
     private var networkJokeRepository: JokeRepository!
     private var stubRequestMaker = StubRequestMaker()
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        networkJokeRepository = NetworkJokeRepository(requestMaker: stubRequestMaker)
+        networkJokeRepository = JsonJokeRepository(requestMaker: stubRequestMaker)
     }
 
     func testTwoPartJokeReturnedCorrectly() async throws {
