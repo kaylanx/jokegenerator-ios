@@ -2,7 +2,6 @@ import Foundation
 
 struct JokeDto: Decodable {
     let id: Int?
-    let error: Bool?
     let category: String?
     let type: String?
     let joke: String?
@@ -11,6 +10,14 @@ struct JokeDto: Decodable {
     let flags: Flags?
     let safe: Bool?
     let lang: String?
+
+    let error: Bool?
+    let internalError: Bool?
+    let code: Int?
+    let message: String?
+    let causedBy: [String]?
+    let additionalInfo: String?
+    let timestamp: Int?
 
     struct Flags: Decodable {
         let nsfw: Bool?
