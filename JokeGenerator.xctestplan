@@ -1,0 +1,45 @@
+{
+  "configurations" : [
+    {
+      "id" : "1A20F08F-552F-4DC5-9FA4-10190959E239",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:JokeGenerator.xcodeproj",
+      "identifier" : "58C426FF2A14F9EA000C3F56",
+      "name" : "JokeGenerator"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:JokeGenerator.xcodeproj",
+        "identifier" : "58C4270F2A14F9F5000C3F56",
+        "name" : "JokeGeneratorTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Modules\/Jokes",
+        "identifier" : "JokesTests",
+        "name" : "JokesTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Modules\/RequestMaker",
+        "identifier" : "RequestMakerTests",
+        "name" : "RequestMakerTests"
+      }
+    }
+  ],
+  "version" : 1
+}

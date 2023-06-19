@@ -1,9 +1,3 @@
-//
-//  JsonJokeRepositoryTests.swift
-//
-//  Created by Andy Kayley on 17/05/2023.
-//
-
 import XCTest
 
 import RequestMaker
@@ -23,7 +17,7 @@ final class JsonJokeRepositoryTests: XCTestCase {
 
     func testTwoPartJokeReturnedCorrectly() async throws {
 
-        stubRequestMaker.jsonJokeToReturn = """
+        stubRequestMaker.dataToReturn = """
         {
             "error": false,
             "category": "Programming",
@@ -42,7 +36,7 @@ final class JsonJokeRepositoryTests: XCTestCase {
             "safe": true,
             "lang": "en"
         }
-        """
+        """.data(using: .utf8)
 
         let joke = try await networkJokeRepository.joke(for: .any)
 
@@ -65,7 +59,7 @@ final class JsonJokeRepositoryTests: XCTestCase {
 
     func testSingleJokeReturnedCorrectly() async throws {
 
-        stubRequestMaker.jsonJokeToReturn = """
+        stubRequestMaker.dataToReturn = """
         {
             "error": false,
             "category": "Programming",
@@ -83,7 +77,7 @@ final class JsonJokeRepositoryTests: XCTestCase {
             "safe": true,
             "lang": "en"
         }
-        """
+        """.data(using: .utf8)
 
         let joke = try await networkJokeRepository.joke(for: .any)
 

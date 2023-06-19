@@ -1,22 +1,26 @@
-//
-//  StubRequestMaker.swift
-//  
-//  Created by Andy Kayley on 18/05/2023.
-//
 import Foundation
+
 import RequestMaker
 
 public final class StubRequestMaker: RequestMaker {
-    var jsonJokeToReturn: String = "{ }"
-    var errorToThrow: Error?
 
-    var makeRequestCalled: Bool = false
-    public func makeRequest(for url: String) async throws -> Data {
-        makeRequestCalled = true
+    public var dataToReturn: Data!
+    public var invokedMakeRequest = false
+    public var invokedMakeRequestCount = 0
+    public var invokedMakeRequestParameters: (url: URL, Void)?
+    public var invokedMakeRequestParametersList = [(url: URL, Void)]()
 
-        if let errorToThrow {
-            throw errorToThrow
-        }
-        return jsonJokeToReturn.data(using: .utf8)!
+    public init() { }
+
+    deinit {
+        invokedMakeRequestParameters = nil
+    }
+
+    public func makeRequest(for url: URL) async throws -> Data {
+        invokedMakeRequest = true
+        invokedMakeRequestCount += 1
+        invokedMakeRequestParameters = (url, ())
+        invokedMakeRequestParametersList.append((url, ()))
+        return dataToReturn
     }
 }
