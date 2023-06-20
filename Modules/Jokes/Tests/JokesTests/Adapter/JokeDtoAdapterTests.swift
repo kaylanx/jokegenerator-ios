@@ -8,7 +8,7 @@ final class JokeDtoAdapterTests: XCTestCase {
 
     func testSingleJokeAdaptedCorrectly() throws {
 
-        let jokeDto = createDto(
+        let jokeDto = JokesTestHelper.createJokeDto(
             id: 11,
             category: "Programming",
             type: "single",
@@ -31,7 +31,7 @@ final class JokeDtoAdapterTests: XCTestCase {
 
     func testTwoPartJokeAdaptedCorrectly() throws {
 
-        let jokeDto = createDto(
+        let jokeDto = JokesTestHelper.createJokeDto(
             id: 13,
             category: "Programming",
             type: "twopart",
@@ -55,7 +55,7 @@ final class JokeDtoAdapterTests: XCTestCase {
     }
 
     func testIdMissingThrowsError() throws {
-        let jokeDto = createDto()
+        let jokeDto = JokesTestHelper.createJokeDto()
         let expectation = expectation(description: "idNull Should Be thrown")
         do {
             let _ = try adapter.adapt(jokeDto: jokeDto)
@@ -66,7 +66,7 @@ final class JokeDtoAdapterTests: XCTestCase {
     }
 
     func testInvalidTypeThrowsError() throws {
-        let jokeDto = createDto(
+        let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: "Programming",
             type: "Doesn't Exist"
@@ -101,7 +101,7 @@ final class JokeDtoAdapterTests: XCTestCase {
     }
 
     private func assertEqual(categoryString: String, jokeCategory: JokeCategory) throws {
-        let jokeDto = createDto(
+        let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: categoryString,
             type: "single"
@@ -110,55 +110,5 @@ final class JokeDtoAdapterTests: XCTestCase {
         let joke = try adapter.adapt(jokeDto: jokeDto)
 
         XCTAssertEqual(jokeCategory, joke.category)
-    }
-
-    private func createDto(
-        id: Int? = nil,
-        category: String? = nil,
-        type: String? = nil,
-        joke: String? = nil,
-        setup: String? = nil,
-        delivery: String? = nil,
-        nsfw: Bool? = nil,
-        religious: Bool? = nil,
-        political: Bool? = nil,
-        racist: Bool? = nil,
-        sexist: Bool? = nil,
-        explicit: Bool? = nil,
-        safe: Bool? = nil,
-        lang: String? = nil,
-        error: Bool? = nil,
-        internalError: Bool? = nil,
-        code: Int? = nil,
-        message: String? = nil,
-        causedBy: [String]? = nil,
-        additionalInfo: String? = nil,
-        timestamp: Int? = nil
-    ) -> JokeDto {
-        JokeDto(
-            id: id,
-            category: category,
-            type: type,
-            joke: joke,
-            setup: setup,
-            delivery: delivery,
-            flags: JokeDto.Flags(
-                nsfw: nsfw,
-                religious: religious,
-                political: political,
-                racist: racist,
-                sexist: sexist,
-                explicit: explicit
-            ),
-            safe: safe,
-            lang: lang,
-            error: error,
-            internalError: internalError,
-            code: code,
-            message: message,
-            causedBy: causedBy,
-            additionalInfo: additionalInfo,
-            timestamp: timestamp
-        )
     }
 }

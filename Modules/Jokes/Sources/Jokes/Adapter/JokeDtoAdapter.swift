@@ -6,7 +6,11 @@ enum JokeDtoAdapterError: Error {
     case invalidCategory(String)
 }
 
-final class JokeDtoAdapter {
+protocol JokeDtoAdapting {
+    func adapt(jokeDto: JokeDto) throws -> Joke
+}
+
+final class JokeDtoAdapter: JokeDtoAdapting {
     func adapt(jokeDto: JokeDto) throws -> Joke {
 
         guard let id = jokeDto.id else {
