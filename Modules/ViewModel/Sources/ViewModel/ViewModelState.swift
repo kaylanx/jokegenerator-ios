@@ -1,15 +1,15 @@
 import SwiftUI
 
 @dynamicMemberLookup
-class ViewModelState<Value>: ObservableObject {
+public class ViewModelState<Value>: ObservableObject {
 
     @Published var value: Value
 
-    init(initialState: Value) {
+    public init(initialState: Value) {
         value = initialState
     }
 
-    func update(_ closure: (inout Value) -> Void) {
+    public func update(_ closure: (inout Value) -> Void) {
         var updated = value
         closure(&updated)
         value = updated

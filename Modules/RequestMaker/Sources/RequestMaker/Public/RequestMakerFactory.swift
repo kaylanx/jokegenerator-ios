@@ -4,8 +4,11 @@ public protocol RequestMakerFactory {
     func requestMaker() -> RequestMaker
 }
 
-final class AppRequestMakerFactory: RequestMakerFactory {
-    func requestMaker() -> RequestMaker {
+public final class AppRequestMakerFactory: RequestMakerFactory {
+
+    public init() { }
+
+    public func requestMaker() -> RequestMaker {
         NetworkRequestMaker()
     }
 }
