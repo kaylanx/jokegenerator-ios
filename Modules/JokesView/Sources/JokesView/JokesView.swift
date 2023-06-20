@@ -43,10 +43,10 @@ struct JokesView_Previews: PreviewProvider {
     }
 }
 
-fileprivate final class PreviewJokeViewViewModel: JokesViewViewModel {
-    var state: ViewModelState<JokesViewState>
+public final class PreviewJokeViewViewModel: JokesViewViewModel {
+    public var state: ViewModelState<JokesViewState>
 
-    init(joke: String, punchline: String?) {
+    public init(joke: String, punchline: String?) {
         state = ViewModelState(initialState: JokesViewState(joke: joke, punchline: punchline))
     }
 }
