@@ -28,12 +28,12 @@ final class JokeDtoAdapter {
             return JokeDetails.twopart(setup: jokeDto.setup ?? "", delivery: jokeDto.delivery ?? "")
         }
 
-        throw JokeDtoAdapterError.invalidType("\(String(describing: jokeDto.type)) is invalid")
+        throw JokeDtoAdapterError.invalidType("\(jokeDto.type ?? "") is invalid")
     }
 
     private func adaptCategory(jokeDto: JokeDto) throws -> JokeCategory {
         guard let category = jokeDto.category, let jokeCategory = JokeCategory.from(string: category) else {
-            throw JokeDtoAdapterError.invalidCategory("\(String(describing: jokeDto.category)) is invalid")
+            throw JokeDtoAdapterError.invalidCategory("\(jokeDto.category ?? "") is invalid")
         }
         return jokeCategory
     }
