@@ -11,45 +11,7 @@ final class AppContainer {
     init() {
         let requestMakerFactory = AppRequestMakerFactory()
         jokeServiceContainer = JokeServiceContainer(requestMakerFactory: requestMakerFactory)
-        appViewModelFactory = AppViewModelFactory()
+        appViewModelFactory = AppViewModelFactory(jokeServiceContainer: jokeServiceContainer)
         appViewFactory = AppViewFactory(viewModelFactory: appViewModelFactory)
-    }
-}
-
-
-protocol ViewFactory {
-    func jokesView() -> JokesView
-}
-
-final class AppViewFactory: ViewFactory {
-
-    let viewModelFactory: ViewModelFactory
-
-    init(viewModelFactory: ViewModelFactory) {
-        self.viewModelFactory = viewModelFactory
-    }
-
-    func jokesView() -> JokesView {
-        JokesView(viewModel: viewModelFactory.jokesViewViewModel())
-    }
-}
-
-import JokesView
-import ViewModel
-
-protocol ViewModelFactory {
-    func jokesViewViewModel() -> JokesViewViewModel
-}
-final class AppViewModelFactory: ViewModelFactory {
-    func jokesViewViewModel() -> JokesViewViewModel {
-        AppJokesViewViewModel()
-    }
-}
-
-final class AppJokesViewViewModel: JokesViewViewModel {
-    var state: ViewModelState<JokesViewState>
-
-    init() {
-        state = ViewModelState(initialState: JokesViewState(joke: "", punchline: nil))
     }
 }

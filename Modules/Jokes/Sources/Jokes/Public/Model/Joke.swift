@@ -20,7 +20,13 @@ public enum JokeDetails {
 }
 
 public struct Joke {
-    let id: Int
-    let category: JokeCategory
-    let details: JokeDetails
+    public let id: Int
+    public let category: JokeCategory
+    public let details: JokeDetails
+
+    public init(id: Int, category: JokeCategory, details: JokeDetails) {
+        self.id = id
+        self.category = category
+        self.details = details
+    }
 }

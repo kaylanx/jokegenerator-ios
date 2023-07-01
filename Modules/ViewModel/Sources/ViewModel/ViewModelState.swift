@@ -3,7 +3,7 @@ import SwiftUI
 @dynamicMemberLookup
 public class ViewModelState<Value>: ObservableObject {
 
-    @Published var value: Value
+    @Published public var value: Value
 
     public init(initialState: Value) {
         value = initialState

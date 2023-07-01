@@ -3,8 +3,8 @@ import SwiftUI
 import ViewModel
 
 public struct JokesViewState {
-    public let joke: String
-    public let punchline: String?
+    public var joke: String
+    public var punchline: String?
 
     public init(joke: String, punchline: String?) {
         self.joke = joke
@@ -14,6 +14,8 @@ public struct JokesViewState {
 
 public protocol JokesViewViewModel {
     var state: ViewModelState<JokesViewState> { get }
+
+    func getNewJoke() async
 }
 
 public struct JokesView: View {
@@ -48,5 +50,9 @@ public final class PreviewJokeViewViewModel: JokesViewViewModel {
 
     public init(joke: String, punchline: String?) {
         state = ViewModelState(initialState: JokesViewState(joke: joke, punchline: punchline))
+    }
+
+    public func getNewJoke() {
+
     }
 }
