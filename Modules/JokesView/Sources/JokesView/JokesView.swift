@@ -5,10 +5,19 @@ import ViewModel
 public struct JokesViewState {
     public var joke: String
     public var punchline: String?
+    public var showPunchline: Bool
+    public var showPunchlineButtonVisible: Bool
 
-    public init(joke: String, punchline: String?) {
+    public init(
+        joke: String,
+        punchline: String?,
+        showPunchline: Bool,
+        showPunchlineButtonVisible: Bool
+    ) {
         self.joke = joke
         self.punchline = punchline
+        self.showPunchline = showPunchline
+        self.showPunchlineButtonVisible = showPunchlineButtonVisible
     }
 }
 
@@ -16,6 +25,7 @@ public protocol JokesViewViewModel {
     var state: ViewModelState<JokesViewState> { get }
 
     func getNewJoke() async
+    func showPunchlineTapped()
 }
 
 public struct JokesView: View {
@@ -29,10 +39,39 @@ public struct JokesView: View {
     }
 
     public var body: some View {
-        VStack {
+        VStack(alignment: .center, spacing: 20) {
             Text(state.joke)
-            if let punchline = state.punchline {
-                Text(punchline)
+            punchline
+            showPunchlineButton
+            getNewJokeButton
+        }
+        .task {
+            await viewModel.getNewJoke()
+        }
+    }
+
+    @ViewBuilder
+    private var punchline: some View {
+        if let punchline = state.punchline, state.showPunchline {
+            Text(punchline)
+        }
+    }
+
+    private var getNewJokeButton: some View {
+        Button {
+            Task {
+                await viewModel.getNewJoke()
+            }
+        } label: {
+            Text("Get another joke")
+        }
+    }
+
+    @ViewBuilder
+    private var showPunchlineButton: some View {
+        if state.showPunchlineButtonVisible {
+            Button(action: viewModel.showPunchlineTapped) {
+                Text("Reveal punchline")
             }
         }
     }
@@ -46,13 +85,24 @@ struct JokesView_Previews: PreviewProvider {
 }
 
 public final class PreviewJokeViewViewModel: JokesViewViewModel {
+
     public var state: ViewModelState<JokesViewState>
 
     public init(joke: String, punchline: String?) {
-        state = ViewModelState(initialState: JokesViewState(joke: joke, punchline: punchline))
+        state = ViewModelState(
+            initialState:
+                JokesViewState(
+                    joke: joke,
+                    punchline: punchline,
+                    showPunchline: true,
+                    showPunchlineButtonVisible: true
+                )
+        )
     }
 
     public func getNewJoke() {
+    }
 
+    public func showPunchlineTapped() {
     }
 }
