@@ -39,6 +39,13 @@
         "identifier" : "RequestMakerTests",
         "name" : "RequestMakerTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/ViewModel",
+        "identifier" : "ViewModelTests",
+        "name" : "ViewModelTests"
+      }
     }
   ],
   "version" : 1

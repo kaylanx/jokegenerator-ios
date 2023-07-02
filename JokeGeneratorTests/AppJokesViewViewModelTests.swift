@@ -85,8 +85,6 @@ final class AppJokesViewViewModelTests: XCTestCase {
         await jokesViewViewModel.getNewJoke()
         XCTAssertFalse(jokesViewViewModel.state.showPunchline)
     }
-
-
 }
 
 final class StubJokeService: JokeService {

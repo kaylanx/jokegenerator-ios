@@ -11,7 +11,7 @@ final class JsonJokeRepository: JokeRepository {
     }
 
     func joke(for category: JokeCategory) async throws -> JokeDto {
-        let jsonData = try await requestMaker.makeRequest(for: URL(string: "https://v2.jokeapi.dev/joke/\(category)")!)
+        let jsonData = try await requestMaker.makeRequest(for: URL(string: "https://v2.jokeapi.dev/joke/\(category)?blacklistFlags=nsfw,racist,sexist")!)
         let jokeDto = try JSONDecoder().decode(JokeDto.self, from: jsonData)
         try throwIfError(jokeDto: jokeDto)
         return jokeDto

@@ -45,6 +45,16 @@
                ReferencedContainer = "container:JokeGenerator.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ViewModelTests"
+               BuildableName = "ViewModelTests"
+               BlueprintName = "ViewModelTests"
+               ReferencedContainer = "container:Modules/ViewModel">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

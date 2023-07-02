@@ -30,17 +30,15 @@ public protocol JokesViewViewModel {
 
 public struct JokesView: View {
 
-    @ObservedObject private var state: ViewModelState<JokesViewState>
     private let viewModel: JokesViewViewModel
 
     public init(viewModel: JokesViewViewModel) {
         self.viewModel = viewModel
-        self.state = viewModel.state
     }
 
     public var body: some View {
         VStack(alignment: .center, spacing: 20) {
-            Text(state.joke)
+            Text(viewModel.state.joke)
             punchline
             showPunchlineButton
             getNewJokeButton
@@ -52,7 +50,7 @@ public struct JokesView: View {
 
     @ViewBuilder
     private var punchline: some View {
-        if let punchline = state.punchline, state.showPunchline {
+        if let punchline = viewModel.state.punchline, viewModel.state.showPunchline {
             Text(punchline)
         }
     }
@@ -69,7 +67,7 @@ public struct JokesView: View {
 
     @ViewBuilder
     private var showPunchlineButton: some View {
-        if state.showPunchlineButtonVisible {
+        if viewModel.state.showPunchlineButtonVisible {
             Button(action: viewModel.showPunchlineTapped) {
                 Text("Reveal punchline")
             }
