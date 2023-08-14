@@ -1,7 +1,5 @@
 import SwiftUI
 
-import ViewModel
-
 public protocol JokesViewViewModel {
     var joke: String { get }
     var punchline: String? { get }

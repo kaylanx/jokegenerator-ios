@@ -1,5 +1,4 @@
 import Foundation
-import ViewModel
 import Jokes
 import JokesView
 

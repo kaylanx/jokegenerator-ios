@@ -1,7 +1,6 @@
 import Combine
 import XCTest
 
-import ViewModel
 import Jokes
 
 @testable import JokeGenerator
