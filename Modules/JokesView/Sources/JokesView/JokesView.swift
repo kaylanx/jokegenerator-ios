@@ -57,15 +57,19 @@ public struct JokesView: View {
     }
 }
 
-struct JokesView_Previews: PreviewProvider {
-    static var previews: some View {
-        JokesView(viewModel: PreviewJokeViewViewModel.singleJoke)
-        JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineHidden)
-        JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineVisible)
-    }
+#Preview("Single joke") {
+    JokesView(viewModel: PreviewJokeViewViewModel.singleJoke)
 }
 
-final class PreviewJokeViewViewModel: JokesViewViewModel {
+#Preview("Punchline hidden") {
+    JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineHidden)
+}
+
+#Preview("Punchline visible") {
+    JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineVisible)
+}
+
+private final class PreviewJokeViewViewModel: JokesViewViewModel {
 
     static let singleJoke = PreviewJokeViewViewModel(joke: "A joke", punchline: nil, showPunchline: false, showPunchlineButtonVisible: false)
     static let jokeWithPunchlineWithPunchlineHidden = PreviewJokeViewViewModel(joke: "Another joke", punchline: "With a punchline", showPunchline: false, showPunchlineButtonVisible: true)
