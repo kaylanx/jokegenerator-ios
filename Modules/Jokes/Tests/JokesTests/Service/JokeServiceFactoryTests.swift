@@ -1,15 +1,16 @@
-import XCTest
+import Testing
 
 @testable import Jokes
 
-final class JokeServiceFactoryTests: XCTestCase {
+struct JokeServiceFactoryTests {
 
     private let stubJokeRepository = StubJokeRepository()
     private let stubJokeDtoAdapter = StubJokeDtoAdapting()
 
-    func testFactoryReturnsJokeServiceImpl() throws {
+    @Test
+    func factoryReturnsJokeServiceImpl() throws {
         let factory = JokeServiceFactoryImpl(jokeRepository: stubJokeRepository, jokeDtoAdapting: stubJokeDtoAdapter)
         let jokeService = factory.jokeService()
-        XCTAssertTrue(jokeService is JokeServiceImpl, "jokeService should be instance of JokeServiceImpl")
+        #expect(jokeService is JokeServiceImpl, "jokeService should be instance of JokeServiceImpl")
     }
 }

@@ -1,12 +1,12 @@
-import XCTest
+import Testing
 
 @testable import RequestMaker
 
-final class AppRequestMakerFactoryTests: XCTestCase {
-
-    func testFactoryReturnsNetworkRequestFactory() throws {
+struct AppRequestMakerFactoryTests {
+    @Test
+    func factoryReturnsNetworkRequestFactory() {
         let factory = AppRequestMakerFactory()
         let requestMaker = factory.requestMaker()
-        XCTAssertTrue(requestMaker is NetworkRequestMaker, "requestMaker should be instance of NetworkRequestMaker")
+        #expect(requestMaker is NetworkRequestMaker)
     }
 }

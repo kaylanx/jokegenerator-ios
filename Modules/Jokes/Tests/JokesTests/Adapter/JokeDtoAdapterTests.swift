@@ -1,12 +1,13 @@
-import XCTest
+import Testing
 
 @testable import Jokes
 
-final class JokeDtoAdapterTests: XCTestCase {
+struct JokeDtoAdapterTests {
 
     let adapter = JokeDtoAdapter()
 
-    func testSingleJokeAdaptedCorrectly() throws {
+    @Test
+    func singleJokeAdaptedCorrectly() throws {
 
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 11,
@@ -17,19 +18,13 @@ final class JokeDtoAdapterTests: XCTestCase {
 
         let joke = try adapter.adapt(jokeDto: jokeDto)
 
-        XCTAssertEqual(11, joke.id)
-
-        XCTAssertEqual(JokeCategory.programming, joke.category)
-
-        switch joke.details {
-        case .single(joke: let joke):
-            XCTAssertEqual("The joke", joke)
-        case .twopart:
-            XCTFail("Joke details should be single")
-        }
+        #expect(joke.id == 11)
+        #expect(joke.category == .programming)
+        #expect(joke.details == .single(joke: "The joke"))
     }
 
-    func testTwoPartJokeAdaptedCorrectly() throws {
+    @Test
+    func twoPartJokeAdaptedCorrectly() throws {
 
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 13,
@@ -41,66 +36,60 @@ final class JokeDtoAdapterTests: XCTestCase {
 
         let joke = try adapter.adapt(jokeDto: jokeDto)
 
-        XCTAssertEqual(13, joke.id)
-
-        XCTAssertEqual(JokeCategory.programming, joke.category)
-
-        switch joke.details {
-        case .single:
-            XCTFail("Joke details should be twoaprt")
-        case .twopart(let setup, let delivery):
-            XCTAssertEqual("The setup", setup)
-            XCTAssertEqual("The punchline", delivery)
-        }
+        #expect(joke.id == 13)
+        #expect(joke.category == .programming)
+        #expect(joke.details == .twopart(setup: "The setup", delivery: "The punchline"))
     }
 
-    func testIdMissingThrowsError() throws {
+    @Test
+    func idMissingThrowsError() throws {
+
         let jokeDto = JokesTestHelper.createJokeDto()
-        let expectation = expectation(description: "idNull Should Be thrown")
-        do {
-            let _ = try adapter.adapt(jokeDto: jokeDto)
-        } catch JokeDtoAdapterError.idNull {
-            expectation.fulfill()
+
+        #expect(throws: JokeDtoAdapterError.idNull) {
+            try adapter.adapt(jokeDto: jokeDto)
         }
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func testInvalidTypeThrowsError() throws {
+    @Test
+    func invalidTypeThrowsError() throws {
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: "Programming",
             type: "Doesn't Exist"
         )
-        let expectation = expectation(description: "Invalid Type Should Be thrown")
-        do {
-            let _ = try adapter.adapt(jokeDto: jokeDto)
-        } catch JokeDtoAdapterError.invalidType(let invalidTypeMessage) {
-            XCTAssertEqual("Doesn't Exist is invalid", invalidTypeMessage)
-            expectation.fulfill()
+
+        #expect(throws: JokeDtoAdapterError.invalidType("Doesn't Exist is invalid")) {
+            try adapter.adapt(jokeDto: jokeDto)
         }
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func testEachCategoryAdaptedCorrectly() throws {
-        try assertEqual(categoryString: "Programming", jokeCategory: .programming)
-        try assertEqual(categoryString: "Any", jokeCategory: .any)
-        try assertEqual(categoryString: "Christmas", jokeCategory: .christmas)
-        try assertEqual(categoryString: "Dark", jokeCategory: .dark)
-        try assertEqual(categoryString: "Misc", jokeCategory: .misc)
-        try assertEqual(categoryString: "Pun", jokeCategory: .pun)
-        try assertEqual(categoryString: "Spooky", jokeCategory: .spooky)
+    @Test
+    func invalidCategoryThrowsError() throws {
+        let jokeDto = JokesTestHelper.createJokeDto(
+            id: 1,
+            category: "Doesn't Exist",
+            type: "single"
+        )
 
-        let expectation = expectation(description: "Invalid Category Should Be thrown")
-        do {
-            try assertEqual(categoryString: "Doesn't Exist", jokeCategory: .spooky)
-        } catch JokeDtoAdapterError.invalidCategory(let invalidCategoryMessage) {
-            XCTAssertEqual("Doesn't Exist is invalid", invalidCategoryMessage)
-            expectation.fulfill()
+        #expect(throws: JokeDtoAdapterError.invalidCategory("Doesn't Exist is invalid")) {
+            try adapter.adapt(jokeDto: jokeDto)
         }
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    private func assertEqual(categoryString: String, jokeCategory: JokeCategory) throws {
+    @Test(
+        "Categories Are Adapted Correctly",
+        arguments: zip([
+            "Any",
+            "Misc",
+            "Programming",
+            "Dark",
+            "Pun",
+            "Spooky",
+            "Christmas"
+        ], JokeCategory.allCases)
+    )
+    func categoryAdaptedCorrectly(categoryString: String, jokeCategory: JokeCategory) async throws {
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: categoryString,
@@ -109,6 +98,31 @@ final class JokeDtoAdapterTests: XCTestCase {
 
         let joke = try adapter.adapt(jokeDto: jokeDto)
 
-        XCTAssertEqual(jokeCategory, joke.category)
+        #expect(joke.category == jokeCategory)
+    }
+}
+
+extension JokeDetails: Equatable {
+    public static func == (lhs: JokeDetails, rhs: JokeDetails) -> Bool {
+        return switch (lhs, rhs) {
+        case (.single(let lhsJoke), .single(let rhsJoke)):
+            lhsJoke == rhsJoke
+        case (.twopart(let lhsSetup, let lhsDelivery), .twopart(let rhsSetup, let rhsDelivery)):
+            lhsSetup == rhsSetup && lhsDelivery == rhsDelivery
+        default: false
+        }
+    }
+}
+
+extension JokeDtoAdapterError: Equatable {
+    public static func == (lhs: JokeDtoAdapterError, rhs: JokeDtoAdapterError) -> Bool {
+        return switch (lhs, rhs) {
+        case (.idNull, .idNull): true
+        case (.invalidType(let lhsErrorMessage), .invalidType(let rhsErrorMessage)):
+            lhsErrorMessage == rhsErrorMessage
+        case (.invalidCategory(let lhsErrorMessage), .invalidCategory(let rhsErrorMessage)):
+            lhsErrorMessage == rhsErrorMessage
+        default: false
+        }
     }
 }
