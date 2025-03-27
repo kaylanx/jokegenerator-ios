@@ -6,7 +6,8 @@ struct JokeDtoAdapterTests {
 
     let adapter = JokeDtoAdapter()
 
-    @Test func singleJokeAdaptedCorrectly() throws {
+    @Test
+    func singleJokeAdaptedCorrectly() throws {
 
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 11,
@@ -22,7 +23,8 @@ struct JokeDtoAdapterTests {
         #expect(joke.details == .single(joke: "The joke"))
     }
 
-    @Test func twoPartJokeAdaptedCorrectly() throws {
+    @Test
+    func twoPartJokeAdaptedCorrectly() throws {
 
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 13,
@@ -39,7 +41,8 @@ struct JokeDtoAdapterTests {
         #expect(joke.details == .twopart(setup: "The setup", delivery: "The punchline"))
     }
 
-    @Test func idMissingThrowsError() throws {
+    @Test
+    func idMissingThrowsError() throws {
 
         let jokeDto = JokesTestHelper.createJokeDto()
 
@@ -48,7 +51,8 @@ struct JokeDtoAdapterTests {
         }
     }
 
-    @Test func invalidTypeThrowsError() throws {
+    @Test
+    func invalidTypeThrowsError() throws {
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: "Programming",
@@ -60,7 +64,8 @@ struct JokeDtoAdapterTests {
         }
     }
 
-    @Test func invalidCategoryThrowsError() throws {
+    @Test
+    func invalidCategoryThrowsError() throws {
         let jokeDto = JokesTestHelper.createJokeDto(
             id: 1,
             category: "Doesn't Exist",

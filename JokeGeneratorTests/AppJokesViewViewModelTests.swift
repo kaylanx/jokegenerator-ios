@@ -1,88 +1,93 @@
-import Combine
-import XCTest
+import Testing
 
 import Jokes
 
 @testable import JokeGenerator
 
 @MainActor
-final class AppJokesViewViewModelTests: XCTestCase {
+struct AppJokesViewViewModelTests {
 
-    var stubJokeService = StubJokeService()
-    var jokesViewViewModel: AppJokesViewViewModel!
+    private let stubJokeService = StubJokeService()
+    private let jokesViewViewModel: AppJokesViewViewModel
 
-    override func setUpWithError() throws {
+    init() {
         jokesViewViewModel = AppJokesViewViewModel(jokeService: stubJokeService)
     }
 
-    func testNewSingleJokeReturned() async throws {
+    @Test
+    func newSingleJokeReturned() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .single(joke: "The joke"))
         await jokesViewViewModel.getNewJoke()
 
-        XCTAssertEqual("The joke", jokesViewViewModel.joke)
-        XCTAssertNil(jokesViewViewModel.punchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.joke == "The joke")
+        #expect(jokesViewViewModel.punchline == nil)
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == false)
     }
 
-    func testNewTwoPartJokeReturned() async throws {
+    @Test
+    func newTwoPartJokeReturned() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .twopart(setup: "The setup", delivery: "The punchline"))
         await jokesViewViewModel.getNewJoke()
 
-        XCTAssertEqual("The setup", jokesViewViewModel.joke)
-        XCTAssertEqual("The punchline", jokesViewViewModel.punchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertTrue(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.joke == "The setup")
+        #expect(jokesViewViewModel.punchline == "The punchline")
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == true)
     }
 
-    func testWhenFirstJokeIsTwoPartAndSecondJokeIsSingleThenPunchlineIsNil() async throws {
+    @Test
+    func whenFirstJokeIsTwoPartAndSecondJokeIsSingleThenPunchlineIsNil() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .twopart(setup: "The setup", delivery: "The punchline"))
         await jokesViewViewModel.getNewJoke()
 
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .single(joke: "The joke"))
         await jokesViewViewModel.getNewJoke()
 
-        XCTAssertEqual("The joke", jokesViewViewModel.joke)
-        XCTAssertNil(jokesViewViewModel.punchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.joke == "The joke")
+        #expect(jokesViewViewModel.punchline == nil)
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == false)
     }
 
-    func testWhenJokeIsTwoPartAndRevealPunchlineTappedThenPunchlineIsShown() async throws {
+    @Test
+    func whenJokeIsTwoPartAndRevealPunchlineTappedThenPunchlineIsShown() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .twopart(setup: "The setup", delivery: "The punchline"))
         await jokesViewViewModel.getNewJoke()
 
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertTrue(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == true)
 
         jokesViewViewModel.showPunchlineTapped()
-        XCTAssertTrue(jokesViewViewModel.showPunchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.showPunchline == true)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == false)
     }
 
-    func testWhenJokeIsSingleAndRevealPunchlineTappedThenPunchlineIsNotShown() async throws {
+    @Test
+    func whenJokeIsSingleAndRevealPunchlineTappedThenPunchlineIsNotShown() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .single(joke: "The joke"))
         await jokesViewViewModel.getNewJoke()
 
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == false)
 
         jokesViewViewModel.showPunchlineTapped()
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
-        XCTAssertFalse(jokesViewViewModel.showPunchlineButtonVisible)
+        #expect(jokesViewViewModel.showPunchline == false)
+        #expect(jokesViewViewModel.showPunchlineButtonVisible == false)
     }
 
-    func testAfterPunchlineShownWhenGetNewJokeCalledPunchlineIsHidden() async throws {
+    @Test
+    func afterPunchlineShownWhenGetNewJokeCalledPunchlineIsHidden() async throws {
         stubJokeService.stubbedJokeResult = Joke(id: 1, category: .any, details: .twopart(setup: "The setup", delivery: "The punchline"))
-        await jokesViewViewModel.getNewJoke()
 
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
+        await jokesViewViewModel.getNewJoke()
+        #expect(jokesViewViewModel.showPunchline == false)
 
         jokesViewViewModel.showPunchlineTapped()
-        XCTAssertTrue(jokesViewViewModel.showPunchline)
+        #expect(jokesViewViewModel.showPunchline == true)
 
         await jokesViewViewModel.getNewJoke()
-        XCTAssertFalse(jokesViewViewModel.showPunchline)
+        #expect(jokesViewViewModel.showPunchline == false)
     }
 }
 

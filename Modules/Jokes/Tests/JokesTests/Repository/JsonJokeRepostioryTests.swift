@@ -1,21 +1,21 @@
-import XCTest
+import Testing
 
 import RequestMaker
 
 @testable import RequestMakerTestHelper
 @testable import Jokes
 
-final class JsonJokeRepositoryTests: XCTestCase {
+struct JsonJokeRepositoryTests {
 
-    private var networkJokeRepository: JokeRepository!
-    private var stubRequestMaker = StubRequestMaker()
+    private let networkJokeRepository: JokeRepository
+    private let stubRequestMaker = StubRequestMaker()
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    init() {
         networkJokeRepository = JsonJokeRepository(requestMaker: stubRequestMaker)
     }
 
-    func testTwoPartJokeReturnedCorrectly() async throws {
+    @Test
+    func twoPartJokeReturnedCorrectly() async throws {
 
         stubRequestMaker.dataToReturn = """
         {
@@ -40,24 +40,26 @@ final class JsonJokeRepositoryTests: XCTestCase {
 
         let joke = try await networkJokeRepository.joke(for: .any)
 
-        XCTAssertEqual(false, joke.error)
-        XCTAssertEqual("Programming", joke.category)
-        XCTAssertEqual("twopart", joke.type)
-        XCTAssertNil(joke.joke)
-        XCTAssertEqual("Why do they call it hyper terminal?", joke.setup)
-        XCTAssertEqual("Too much Java.", joke.delivery)
-        XCTAssertEqual(false, joke.flags?.nsfw)
-        XCTAssertEqual(false, joke.flags?.religious)
-        XCTAssertEqual(false, joke.flags?.racist)
-        XCTAssertEqual(false, joke.flags?.sexist)
-        XCTAssertEqual(false, joke.flags?.explicit)
+        #expect(joke.error == false)
 
-        XCTAssertEqual(226, joke.id)
-        XCTAssertEqual(true, joke.safe)
-        XCTAssertEqual("en", joke.lang)
+        #expect(joke.category == "Programming")
+        #expect(joke.type == "twopart")
+        #expect(joke.joke == nil)
+        #expect(joke.setup == "Why do they call it hyper terminal?")
+        #expect(joke.delivery == "Too much Java.")
+        #expect(joke.flags?.nsfw == false)
+        #expect(joke.flags?.religious == false)
+        #expect(joke.flags?.racist == false)
+        #expect(joke.flags?.sexist == false)
+        #expect(joke.flags?.explicit == false)
+
+        #expect(joke.id == 226)
+        #expect(joke.safe == true)
+        #expect(joke.lang == "en")
     }
 
-    func testSingleJokeReturnedCorrectly() async throws {
+    @Test
+    func singleJokeReturnedCorrectly() async throws {
 
         stubRequestMaker.dataToReturn = """
         {
@@ -81,24 +83,25 @@ final class JsonJokeRepositoryTests: XCTestCase {
 
         let joke = try await networkJokeRepository.joke(for: .any)
 
-        XCTAssertEqual(false, joke.error)
-        XCTAssertEqual("Programming", joke.category)
-        XCTAssertEqual("single", joke.type)
-        XCTAssertEqual("Programming is 10% science, 20% ingenuity, and 70% getting the ingenuity to work with the science.", joke.joke)
-        XCTAssertNil(joke.setup)
-        XCTAssertNil(joke.delivery)
-        XCTAssertEqual(false, joke.flags?.nsfw)
-        XCTAssertEqual(false, joke.flags?.religious)
-        XCTAssertEqual(false, joke.flags?.racist)
-        XCTAssertEqual(false, joke.flags?.sexist)
-        XCTAssertEqual(false, joke.flags?.explicit)
+        #expect(joke.error == false)
+        #expect(joke.category == "Programming")
+        #expect(joke.type == "single")
+        #expect(joke.joke == "Programming is 10% science, 20% ingenuity, and 70% getting the ingenuity to work with the science.")
+        #expect(joke.setup == nil)
+        #expect(joke.delivery == nil)
+        #expect(joke.flags?.nsfw == false)
+        #expect(joke.flags?.religious == false)
+        #expect(joke.flags?.racist == false)
+        #expect(joke.flags?.sexist == false)
+        #expect(joke.flags?.explicit == false)
 
-        XCTAssertEqual(37, joke.id)
-        XCTAssertEqual(true, joke.safe)
-        XCTAssertEqual("en", joke.lang)
+        #expect(joke.id == 37)
+        #expect(joke.safe == true)
+        #expect(joke.lang == "en")
     }
 
-    func testErrorJsonThrowsClientError() async throws {
+    @Test
+    func errorJsonThrowsClientError() async throws {
 
         stubRequestMaker.dataToReturn = """
         {
@@ -114,22 +117,21 @@ final class JsonJokeRepositoryTests: XCTestCase {
         }
         """.data(using: .utf8)
 
-        let expectation = expectation(description: "JokeRepositoryError.client should be thrown")
-        do {
-            let _ = try await networkJokeRepository.joke(for: .any)
-        } catch JokeRepositoryError.client(let errorDetails) {
-            XCTAssertEqual(106, errorDetails.code)
-            XCTAssertEqual("No matching joke found", errorDetails.message)
-            XCTAssertEqual(["No jokes were found that match your provided filter(s)"], errorDetails.causedBy)
-            XCTAssertEqual("The specified category is invalid - Got: \"foo\" - Possible categories are: \"Any, Misc, Programming, Dark, Pun, Spooky, Christmas\" (case insensitive)", errorDetails.additionalInfo)
-            XCTAssertEqual(1579170794412, errorDetails.timestamp)
-            expectation.fulfill()
-        }
 
-        await fulfillment(of: [expectation], timeout: 0.1)
+        let errorDetails = JokeRepositoryError.JokeErrorDetails(
+            code: 106,
+            message: "No matching joke found",
+            causedBy: ["No jokes were found that match your provided filter(s)"],
+            additionalInfo: "The specified category is invalid - Got: \"foo\" - Possible categories are: \"Any, Misc, Programming, Dark, Pun, Spooky, Christmas\" (case insensitive)",
+            timestamp: 1579170794412
+        )
+        await #expect(throws: JokeRepositoryError.client(errorDetails)) {
+             try await networkJokeRepository.joke(for: .any)
+        }
     }
 
-    func testErrorJsonThrowsInternalError() async throws {
+    @Test
+    func errorJsonThrowsInternalError() async throws {
 
         stubRequestMaker.dataToReturn = """
         {
@@ -145,18 +147,37 @@ final class JsonJokeRepositoryTests: XCTestCase {
         }
         """.data(using: .utf8)
 
-        let expectation = expectation(description: "JokeRepositoryError.client internal be thrown")
-        do {
-            let _ = try await networkJokeRepository.joke(for: .any)
-        } catch JokeRepositoryError.internal(let errorDetails) {
-            XCTAssertEqual(777, errorDetails.code)
-            XCTAssertEqual("Something went terribly wrong", errorDetails.message)
-            XCTAssertEqual(["Servers are on fire"], errorDetails.causedBy)
-            XCTAssertEqual("Internal server error", errorDetails.additionalInfo)
-            XCTAssertEqual(1579170794412, errorDetails.timestamp)
-            expectation.fulfill()
+        let errorDetails = JokeRepositoryError.JokeErrorDetails(
+            code: 777,
+            message: "Something went terribly wrong",
+            causedBy: ["Servers are on fire"],
+            additionalInfo: "Internal server error",
+            timestamp: 1579170794412
+        )
+        await #expect(throws: JokeRepositoryError.internal(errorDetails)) {
+            try await networkJokeRepository.joke(for: .any)
         }
+    }
+}
 
-        await fulfillment(of: [expectation], timeout: 0.1)
+extension JokeRepositoryError: Equatable {
+    public static func == (lhs: JokeRepositoryError, rhs: JokeRepositoryError) -> Bool {
+        return switch (lhs, rhs) {
+        case (.internal(let lhsJokeDetails), .internal(let rhsJokeDetails)):
+            lhsJokeDetails == rhsJokeDetails
+        case (.client(let lhsJokeDetails), .client(let rhsJokeDetails)):
+            lhsJokeDetails == rhsJokeDetails
+        default: false
+        }
+    }
+}
+
+extension JokeRepositoryError.JokeErrorDetails: Equatable {
+    public static func == (lhs: JokeRepositoryError.JokeErrorDetails, rhs: JokeRepositoryError.JokeErrorDetails) -> Bool {
+        lhs.message == rhs.message &&
+        lhs.code == rhs.code &&
+        lhs.causedBy == rhs.causedBy &&
+        lhs.additionalInfo == rhs.additionalInfo &&
+        lhs.timestamp == rhs.timestamp
     }
 }
