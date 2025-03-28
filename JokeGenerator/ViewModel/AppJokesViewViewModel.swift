@@ -3,7 +3,7 @@ import JokesView
 import Jokes
 
 @Observable
-final class AppJokesViewViewModel: JokesViewViewModel {
+final class AppJokesViewViewModel: @preconcurrency JokesViewViewModel {
 
     var joke: String = ""
     var punchline: String? = nil

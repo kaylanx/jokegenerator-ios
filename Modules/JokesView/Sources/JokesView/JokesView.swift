@@ -25,7 +25,7 @@ public struct JokesView: View {
             showPunchlineButton
             getNewJokeButton
         }
-        .task {
+        .task { @MainActor [viewModel] in
             await viewModel.getNewJoke()
         }
     }
@@ -39,7 +39,7 @@ public struct JokesView: View {
 
     private var getNewJokeButton: some View {
         Button {
-            Task {
+            Task { @MainActor [viewModel] in
                 await viewModel.getNewJoke()
             }
         } label: {
@@ -58,22 +58,21 @@ public struct JokesView: View {
 }
 
 #Preview("Single joke") {
-    JokesView(viewModel: PreviewJokeViewViewModel.singleJoke)
+    let singleJoke = PreviewJokeViewViewModel(joke: "A joke", punchline: nil, showPunchline: false, showPunchlineButtonVisible: false)
+    JokesView(viewModel: singleJoke)
 }
 
 #Preview("Punchline hidden") {
-    JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineHidden)
+    let jokeWithPunchlineWithPunchlineHidden = PreviewJokeViewViewModel(joke: "Another joke", punchline: "With a punchline", showPunchline: false, showPunchlineButtonVisible: true)
+    JokesView(viewModel: jokeWithPunchlineWithPunchlineHidden)
 }
 
 #Preview("Punchline visible") {
-    JokesView(viewModel: PreviewJokeViewViewModel.jokeWithPunchlineWithPunchlineVisible)
+    let jokeWithPunchlineWithPunchlineVisible = PreviewJokeViewViewModel(joke: "Yet another joke", punchline: "With a punchline", showPunchline: true, showPunchlineButtonVisible: false)
+    JokesView(viewModel: jokeWithPunchlineWithPunchlineVisible)
 }
 
 private final class PreviewJokeViewViewModel: JokesViewViewModel {
-
-    static let singleJoke = PreviewJokeViewViewModel(joke: "A joke", punchline: nil, showPunchline: false, showPunchlineButtonVisible: false)
-    static let jokeWithPunchlineWithPunchlineHidden = PreviewJokeViewViewModel(joke: "Another joke", punchline: "With a punchline", showPunchline: false, showPunchlineButtonVisible: true)
-    static let jokeWithPunchlineWithPunchlineVisible = PreviewJokeViewViewModel(joke: "Yet another joke", punchline: "With a punchline", showPunchline: true, showPunchlineButtonVisible: false)
 
     var joke: String
     var punchline: String?

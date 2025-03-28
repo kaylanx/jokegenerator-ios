@@ -1,6 +1,6 @@
 import Foundation
 
-public enum JokeCategory: String, CaseIterable {
+public enum JokeCategory: String, CaseIterable, Sendable {
     case any = "Any"
     case misc = "Misc"
     case programming = "Programming"
@@ -14,12 +14,12 @@ public enum JokeCategory: String, CaseIterable {
     }
 }
 
-public enum JokeDetails {
+public enum JokeDetails: Sendable {
     case single(joke: String)
     case twopart(setup: String, delivery: String)
 }
 
-public struct Joke {
+public struct Joke: Sendable {
     public let id: Int
     public let category: JokeCategory
     public let details: JokeDetails
