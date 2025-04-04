@@ -7,7 +7,7 @@ public protocol JokesViewViewModel {
     var showPunchlineButtonVisible: Bool { get }
 
     func getNewJoke() async
-    func showPunchlineTapped()
+    @MainActor func showPunchlineTapped()
 }
 
 public struct JokesView: View {

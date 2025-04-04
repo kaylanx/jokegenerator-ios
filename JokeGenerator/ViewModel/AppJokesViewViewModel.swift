@@ -3,7 +3,7 @@ import JokesView
 import Jokes
 
 @Observable
-final class AppJokesViewViewModel: @preconcurrency JokesViewViewModel {
+final class AppJokesViewViewModel: JokesViewViewModel {
 
     var joke: String = ""
     var punchline: String? = nil
@@ -34,7 +34,6 @@ final class AppJokesViewViewModel: @preconcurrency JokesViewViewModel {
         }
     }
 
-    @MainActor
     func showPunchlineTapped() {
         if punchline != nil {
             showPunchline = true
