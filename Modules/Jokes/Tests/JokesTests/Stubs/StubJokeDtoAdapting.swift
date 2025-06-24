@@ -11,6 +11,13 @@ final class StubJokeDtoAdapting: JokeDtoAdapting {
     var stubbedAdaptError: Error?
     var stubbedAdaptResult: Joke!
 
+    deinit {
+        invokedAdaptParameters = nil
+        invokedAdaptParametersList.removeAll()
+        stubbedAdaptError = nil
+        stubbedAdaptResult = nil
+    }
+
     func adapt(jokeDto: JokeDto) throws -> Joke {
         invokedAdapt = true
         invokedAdaptCount += 1

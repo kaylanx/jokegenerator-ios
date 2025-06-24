@@ -4,16 +4,20 @@ import RequestMaker
 
 public final class StubRequestMaker: RequestMaker {
 
-    public var dataToReturn: Data!
     public var invokedMakeRequest = false
     public var invokedMakeRequestCount = 0
     public var invokedMakeRequestParameters: (url: URL, Void)?
     public var invokedMakeRequestParametersList = [(url: URL, Void)]()
+    public var stubbedMakeRequestError: Error?
+    public var stubbedMakeRequestResult: Data!
 
     public init() { }
 
     deinit {
         invokedMakeRequestParameters = nil
+        invokedMakeRequestParametersList.removeAll()
+        stubbedMakeRequestError = nil
+        stubbedMakeRequestResult = nil
     }
 
     public func makeRequest(for url: URL) async throws -> Data {
@@ -21,6 +25,9 @@ public final class StubRequestMaker: RequestMaker {
         invokedMakeRequestCount += 1
         invokedMakeRequestParameters = (url, ())
         invokedMakeRequestParametersList.append((url, ()))
-        return dataToReturn
+        if let error = stubbedMakeRequestError {
+            throw error
+        }
+        return stubbedMakeRequestResult
     }
 }

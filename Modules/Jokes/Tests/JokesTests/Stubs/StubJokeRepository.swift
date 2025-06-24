@@ -11,16 +11,21 @@ final class StubJokeRepository: JokeRepository {
     var stubbedJokeError: Error?
     var stubbedJokeResult: JokeDto!
 
+    deinit {
+        invokedJokeParameters = nil
+        invokedJokeParametersList.removeAll()
+        stubbedJokeError = nil
+        stubbedJokeResult = nil
+    }
+
     func joke(for category: JokeCategory) async throws -> JokeDto {
         invokedJoke = true
         invokedJokeCount += 1
         invokedJokeParameters = (category, ())
         invokedJokeParametersList.append((category, ()))
-
         if let error = stubbedJokeError {
             throw error
         }
-
         return stubbedJokeResult
     }
 }

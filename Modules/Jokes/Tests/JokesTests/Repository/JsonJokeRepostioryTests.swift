@@ -17,7 +17,7 @@ struct JsonJokeRepositoryTests {
     @Test
     func twoPartJokeReturnedCorrectly() async throws {
 
-        stubRequestMaker.dataToReturn = """
+        stubRequestMaker.stubbedMakeRequestResult = """
         {
             "error": false,
             "category": "Programming",
@@ -61,7 +61,7 @@ struct JsonJokeRepositoryTests {
     @Test
     func singleJokeReturnedCorrectly() async throws {
 
-        stubRequestMaker.dataToReturn = """
+        stubRequestMaker.stubbedMakeRequestResult = """
         {
             "error": false,
             "category": "Programming",
@@ -103,7 +103,7 @@ struct JsonJokeRepositoryTests {
     @Test
     func errorJsonThrowsClientError() async throws {
 
-        stubRequestMaker.dataToReturn = """
+        stubRequestMaker.stubbedMakeRequestResult = """
         {
             "error": true,
             "internalError": false,
@@ -133,7 +133,7 @@ struct JsonJokeRepositoryTests {
     @Test
     func errorJsonThrowsInternalError() async throws {
 
-        stubRequestMaker.dataToReturn = """
+        stubRequestMaker.stubbedMakeRequestResult = """
         {
             "error": true,
             "internalError": true,
